@@ -87,6 +87,6 @@ module "github-oidc" {
   create_oidc_provider = true
   create_oidc_role     = true
 
-  repositories = ["Nwekechidi/secure-iac"]
+  repositories = ["NwekeChidi/secure-iac"]
   # oidc_role_attach_policies = ["arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"]
 }

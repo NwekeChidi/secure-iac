@@ -39,6 +39,12 @@ jobs:
           docker tag $ECR_REPO:$TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$TAG
           docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$TAG
 
+      - name: Terraform
+        run: |
+          cd
+          terraform init -input=false
+          terraform apply -auto-approve -input=false
+
       - name: Update Lambda code
         run: |
           aws lambda update-function-code \
