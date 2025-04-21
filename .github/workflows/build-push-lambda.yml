@@ -32,6 +32,11 @@ jobs:
         run: |
           echo "AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)" >> $GITHUB_ENV
 
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.5.7
+
       - name: Build & push
         run: |
           TAG=${GITHUB_SHA::7}
@@ -39,7 +44,7 @@ jobs:
           docker tag $ECR_REPO:$TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$TAG
           docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$TAG
 
-      - name: Terraform
+      - name: Terraform Init & Apply
         run: |
           cd
           terraform init -input=false
