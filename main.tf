@@ -30,16 +30,16 @@ terraform {
 module "network" {
   source = "./modules/network"
 
-  name = local.name
+  name       = local.name
   cidr_block = var.vpc_cidr
-  level = local.level
+  level      = local.level
 }
 
 ############################################################
 # S3 bucket to hold ZAP reports
 ############################################################
 resource "aws_s3_bucket" "zap_reports" {
-  bucket = "${var.env_name}-zap-reports"
+  bucket        = "${var.env_name}-zap-reports"
   force_destroy = true
 
   tags = merge(var.common_tags, {
@@ -51,7 +51,7 @@ resource "aws_s3_bucket" "zap_reports" {
 # ECR repo for the ZAP Lambda container
 ############################################################
 resource "aws_ecr_repository" "zap_lambda" {
-  name = "zap-lambda"
+  name                 = "zap-lambda"
   image_tag_mutability = "MUTABLE"
 
   lifecycle {
@@ -60,7 +60,7 @@ resource "aws_ecr_repository" "zap_lambda" {
 
   tags = merge(var.common_tags, {
     "Purpose" = "Container for OWASP ZAP Lambda"
-    "Level" = local.level
+    "Level"   = local.level
   })
 }
 
@@ -71,10 +71,10 @@ module "lambda_zap" {
   source = "./modules/lambda_zap"
 
   bucket_name = aws_s3_bucket.zap_reports.bucket
-  bucket_arn = aws_s3_bucket.zap_reports.arn
+  bucket_arn  = aws_s3_bucket.zap_reports.arn
   common_tags = var.common_tags
-  target_url = var.target_url
-  aws_region = var.aws_region
+  target_url  = var.target_url
+  aws_region  = var.aws_region
 }
 
 ############################################################
@@ -87,6 +87,6 @@ module "github-oidc" {
   create_oidc_provider = true
   create_oidc_role     = true
 
-  # repositories              = ["terraform-module/module-blueprint"]
+  repositories = ["Nwekechidi/secure-iac"]
   # oidc_role_attach_policies = ["arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"]
 }
