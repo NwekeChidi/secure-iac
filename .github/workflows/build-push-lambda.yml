@@ -46,7 +46,6 @@ jobs:
 
       - name: Terraform Init & Apply
         run: |
-          cd
           terraform init -input=false
           terraform apply -auto-approve -input=false
 
