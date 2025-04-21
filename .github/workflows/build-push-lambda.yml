@@ -43,7 +43,7 @@ jobs:
           TAG=${GITHUB_SHA::7}
           TAG1="dev"
           docker build -t $ECR_REPO:$TAG1 ./lambda-zap
-          docker tag $ECR_REPO:$TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$TAG1
+          docker tag $ECR_REPO:$TAG1 $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$TAG1
           docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$TAG1
 
       # - name: Terraform Init & Apply
