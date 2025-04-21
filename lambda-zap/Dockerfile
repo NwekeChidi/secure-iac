@@ -1,4 +1,4 @@
-FROM public.ecr.aws/lambda/provided.al2:latest
+FROM public.ecr.aws/lambda/provided:al2:latest
 
 # ---- ZAP CLI + AWS CLI ----
 RUN yum -y install java-17-amazon-corretto git tar gzip && \
