@@ -27,6 +27,11 @@ jobs:
 
       - uses: aws-actions/amazon-ecr-login@v2
 
+      - name: Set AWS account ID
+        id: aws-account
+        run: |
+          echo "AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)" >> $GITHUB_ENV
+
       - name: Build & push
         run: |
           TAG=${GITHUB_SHA::7}
