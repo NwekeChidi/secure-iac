@@ -75,6 +75,7 @@ module "lambda_zap" {
   common_tags = var.common_tags
   target_url  = var.target_url
   aws_region  = var.aws_region
+  env_name    = var.env_name
 }
 
 ############################################################
