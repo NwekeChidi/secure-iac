@@ -1,6 +1,7 @@
 name: Terraform CI
 
 on:
+  push:
   pull_request:
     paths: ["**.tf", ".github/workflows/**"]
 env:
