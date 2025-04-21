@@ -12,6 +12,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Show OIDC token claims
+        run: |
+          curl -s -H "Authorization: Bearer $ACTIONS_ID_TOKEN" https://token.actions.githubusercontent.com/.well-known/openid-configuration | jq .
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
