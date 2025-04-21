@@ -2,8 +2,8 @@ name: Terraform CI
 
 on:
   push:
-  pull_request:
-    paths: ["**.tf", ".github/workflows/**"]
+  # pull_request:
+  #   paths: ["**.tf", ".github/workflows/**"]
 env:
   AWS_REGION: us-west-2
   TF_CLOUD_ORGANIZATION: "devsecops"
