@@ -41,19 +41,20 @@ jobs:
       - name: Build & push
         run: |
           TAG=${GITHUB_SHA::7}
-          docker build -t $ECR_REPO:$TAG ./lambda-zap
-          docker tag $ECR_REPO:$TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$TAG
-          docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$TAG
+          TAG1="dev"
+          docker build -t $ECR_REPO:$TAG1 ./lambda-zap
+          docker tag $ECR_REPO:$TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$TAG1
+          docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$TAG1
 
-      - name: Terraform Init & Apply
-        run: |
-          terraform init -input=false
-          terraform apply -auto-approve -input=false
-        env:
-          TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
+      # - name: Terraform Init & Apply
+      #   run: |
+      #     terraform init -input=false
+      #     terraform apply -auto-approve -input=false
+      #   env:
+      #     TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
 
-      - name: Update Lambda code
-        run: |
-          aws lambda update-function-code \
-            --function-name zap-dast \
-            --image-uri $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$TAG
+      # - name: Update Lambda code
+      #   run: |
+      #     aws lambda update-function-code \
+      #       --function-name zap-dast \
+      #       --image-uri $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$TAG

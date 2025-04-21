@@ -6,14 +6,15 @@ resource "aws_lambda_function" "zap_lambda" {
 
   function_name = "zap-dast"
   package_type  = "Image"
-  image_uri     = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.aws_region}.amazonaws.com/zap-lambda:latest"
+  # image_uri     = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.aws_region}.amazonaws.com/zap-lambda:latest"
+  image_uri = "dummy-uri"
 
-  memory_size   = 1024
-  timeout       = 900
+  memory_size = 1024
+  timeout     = 900
 
   environment {
     variables = {
-      TARGET_URL = var.target_url
+      TARGET_URL    = var.target_url
       REPORT_BUCKET = var.bucket_name
     }
   }
