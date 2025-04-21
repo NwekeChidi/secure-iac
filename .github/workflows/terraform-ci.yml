@@ -1,0 +1,62 @@
+name: Terraform CI
+
+on:
+  pull_request:
+    paths: ["**.tf", ".github/workflows/**"]
+env:
+  AWS_REGION: us-west-2
+  TF_CLOUD_ORGANIZATION: "devsecops"
+  TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
+  TF_WORKSPACE: "hashira_corp"
+  CONFIG_DIRECTORY: "./"
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # OIDC for AWS & SARIF upload
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - name: Format check
+        run: terraform fmt -check -recursive
+
+      - name: Init
+        run: terraform init -upgrade
+
+      - name: Validate
+        run: terraform validate -no-color
+
+      - name: Plan
+        run: terraform plan -out=tfplan.bin -no-color
+
+      - name: Upload plan artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: tfplan.bin
+
+    # ---------- Static security scanning ----------
+    # - name: tfsec (IaC static analysis)
+    #   uses: aquasecurity/tfsec-action@v2
+    #   with:
+    #     sarif_file: tfsec.sarif
+
+    # - name: Snyk IaC scan
+    #   uses: snyk/actions/iac@v0.6.0
+    #   env:
+    #     SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+    #   with:
+    #     sarif: true
+
+    # - name: Upload SARIF to Security tab
+    #   uses: github/codeql-action/upload-sarif@v3
+    #   with:
+    #     sarif_file: |
+    #       tfsec.sarif
+    #       snyk.sarif
