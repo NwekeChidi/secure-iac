@@ -1,0 +1,41 @@
+name: Build & Push ZAP Lambda
+
+on:
+  push:
+    paths:
+      - "lambda-zap/**"
+      - ".github/workflows/build-push-lambda.yml"
+
+env:
+  ECR_REPO: zap-lambda
+  AWS_REGION: us-west-2
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: ${{ secrets.AWS_OIDC_ROLE }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build & push
+        run: |
+          TAG=${GITHUB_SHA::7}
+          docker build -t $ECR_REPO:$TAG ./lambda-zap
+          docker tag $ECR_REPO:$TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$TAG
+          docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$TAG
+
+      - name: Update Lambda code
+        run: |
+          aws lambda update-function-code \
+            --function-name zap-dast \
+            --image-uri $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$TAG
